@@ -1,0 +1,21 @@
+# sun queries
+sun_findOne=SELECT id, name, type, date_creation, last_modified, version FROM sun WHERE id = ?
+sun_findAll=SELECT id, name, type, date_creation, last_modified, version FROM sun
+sun_create=INSERT INTO sun(name, type, date_creation, last_modified, version) VALUES (?, ?, NOW(), NOW(), 0)
+sun_update=UPDATE sun SET name = ?, type = ?, last_modified = ?, version = ? WHERE id = ?
+sun_remove=DELETE FROM sun WHERE id = ?
+# planet queries
+planet_findOne=SELECT id, sun_id, name, type, inhabitant, population, date_creation, last_modified, version FROM planet WHERE id = ?
+planet_findAll=SELECT id, sun_id, name, type, inhabitant, population, date_creation, last_modified, version FROM planet
+planet_findAllBySunId=SELECT id, sun_id, name, type, inhabitant, population, date_creation, last_modified, version FROM planet WHERE sun_id = ?
+planet_create=INSERT INTO planet(sun_id, name, type, inhabitant, population, date_creation, last_modified, version) VALUES (?, ?, ?, ?, ?, NOW, NOW, 0)
+planet_update=UPDATE planet SET sun_id = ?, name = ?, type = ?, inhabitant = ?, population = ?, last_modified = NOW(), version = (SELECT version + 1 FROM planet WHERE id = ?) WHERE id = ?
+planet_remove=DELETE FROM planet WHERE id = ?
+# satellite queries
+satellite_findOne=SELECT id, planet_id, name, date_creation, last_modified, version FROM satellite WHERE id = ?
+satellite_findAll=SELECT id, planet_id, name, date_creation, last_modified, version FROM satellite
+satellite_findAllBySunId=SELECT s.id, s.planet_id, s.name, s.date_creation, s.last_modified, s.version FROM satellite s INNER JOIN planet p ON p.id = s.planet_id INNER JOIN sun ON sun.id = p.sun_id WHERE sun_id = ?
+satellite_findAllByPlanetId=SELECT s.id, s.planet_id, s.name FROM satellite s INNER JOIN planet p ON p.id = s.planet_id WHERE p.id = ?
+satellite_create=INSERT INTO satellite (planet_id, name, date_creation, last_modified, version) VALUES (?, ?, NOW, NOW, 0)
+satellite_update=UPDATE satellite SET name = ?, last_modified = NOW(), version = (SELECT version + 1 FROM satellite WHERE id = ?) WHERE id = ?
+satellite_remove=DELETE FROM satellite WHERE id = ?
